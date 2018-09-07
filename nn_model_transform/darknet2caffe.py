@@ -43,7 +43,7 @@ def darknet2caffe(cfgfile, weightfile, protofile, caffemodel):
             continue  
         elif block['type'] == 'convolutional':  
             batch_normalize = int(block['batch_normalize'])  
-            if block.has_key('name'):  
+            if 'name' in block.keys():  
                 conv_layer_name = block['name']  
                 bn_layer_name = '%s-bn' % block['name']  
                 scale_layer_name = '%s-scale' % block['name']  
@@ -58,7 +58,7 @@ def darknet2caffe(cfgfile, weightfile, protofile, caffemodel):
                 start = load_conv2caffe(buf, start, params[conv_layer_name])  
             layer_id = layer_id+1  
         elif block['type'] == 'connected':  
-            if block.has_key('name'):  
+            if 'name' in block.keys():  
                 fc_layer_name = block['name']  
             else:  
                 fc_layer_name = 'layer%d-fc' % layer_id  
@@ -79,7 +79,9 @@ def darknet2caffe(cfgfile, weightfile, protofile, caffemodel):
         elif block['type'] == 'cost':  
             layer_id = layer_id + 1  
         elif block['type'] == 'upsample':  
-            layer_id = layer_id + 1  
+            layer_id = layer_id + 1
+        elif block['type'] == 'yolo':
+            layer_id = layer_id + 1
         else:  
             print('unknow layer type %s ' % block['type'])  
             layer_id = layer_id + 1  
@@ -164,6 +166,9 @@ def cfg2prototxt(cfgfile):
             convolution_param['kernel_size'] = block['size']
             if block['pad'] == '1':
                 convolution_param['pad'] = str(int(convolution_param['kernel_size'])/2)
+                convolution_param['pad'] = str(int(1))
+            if block['size'] == '1':
+                convolution_param['pad'] = 0
             convolution_param['stride'] = block['stride']
             if block['batch_normalize'] == '1':
                 convolution_param['bias_term'] = 'false'
@@ -286,8 +291,9 @@ def cfg2prototxt(cfgfile):
                 #topnames[layer_id] = bottom
                 route_layer['bottom'] = bottom
             if (bottom_layer_dim == 2):
-                prev_layer_id1 = layer_id + int(layer_name[0])
-                prev_layer_id2 = int(layer_name[1]) + 1
+                layer_name = [layer_id + int(idx) if int(idx) < 0 else int(idx) + 1 for idx in layer_name ]
+                prev_layer_id1 = int(layer_name[0])
+                prev_layer_id2 = int(layer_name[1])
                 bottom1 = topnames[prev_layer_id1]
                 bottom2 = topnames[prev_layer_id2]
                 route_layer['bottom'] = [bottom1, bottom2]
@@ -305,13 +311,13 @@ def cfg2prototxt(cfgfile):
         elif block['type'] == 'yolo':
             yolo_layer = OrderedDict()
             yolo_layer['bottom'] = bottom
-            yolo_layer['type'] = 'Yolo'
+            yolo_layer['type'] = 'Concat'
             if 'name' in block.keys():
                 yolo_layer['top'] = block['name']
                 yolo_layer['name'] = block['name']
             else:
-                yolo_layer['top'] = 'layer%d-route' % layer_id
-                yolo_layer['name'] = 'layer%d-route' % layer_id
+                yolo_layer['top'] = 'layer%d-yolo' % layer_id
+                yolo_layer['name'] = 'layer%d-yolo' % layer_id
             layers.append(yolo_layer)
             bottom = yolo_layer['top']
             topnames[layer_id] = bottom
@@ -323,8 +329,8 @@ def cfg2prototxt(cfgfile):
                 upsample_layer['top'] = block['name']
                 upsample_layer['name'] = block['name']
             else:
-                upsample_layer['top'] = 'layer%d-route' % layer_id
-                upsample_layer['name'] = 'layer%d-route' % layer_id
+                upsample_layer['top'] = 'layer%d-upsample' % layer_id
+                upsample_layer['name'] = 'layer%d-upsample' % layer_id
             upsample_layer['type'] = 'Upsample'
             upsample_param = OrderedDict()
             upsample_param['scale'] = block['stride']
