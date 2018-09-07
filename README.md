@@ -13,6 +13,6 @@ Currently, we have implemented the following features:
 
 ### Yolo-Caffe
 Now our tool can be used for the transformation from arbitrary Yolo version to Caffemodel.
-Note that you can use directly the $Yolov1(v2)-Caffe$ with the original Caffe version. If you want to
+Note that you can directly use the $Yolov1(v2)-Caffe$ with the original Caffe version. If you want to
 use $Yolov3-Caffe$, you must add the upsample-layer into the original Caffe and recompile it.
 You can found the source code of the upsample-layer in the [extra_caffe_layers] dir.  
