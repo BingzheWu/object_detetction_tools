@@ -7,12 +7,15 @@ model transfomer for various framework (e.g darknet2caffe), metric calculator (e
 
 This module supports the transformation of the detection models trained within different framework.
 Currently, we have implemented the following features:
-* Yolov1-Caffe
-* Yolov2-Caffe
-* Yolov3-caffe
+* yolov1-caffe
+* yolov2-caffe
+* yolov3-caffe
 
-### Yolo-Caffe
+#### yolo-caffe
 Now our tool can be used for the transformation from arbitrary Yolo version to Caffemodel.
-Note that you can directly use the $Yolov1(v2)-Caffe$ with the original Caffe version. If you want to
-use $Yolov3-Caffe$, you must add the upsample-layer into the original Caffe and recompile it.
-You can found the source code of the upsample-layer in the [extra_caffe_layers] dir.  
+Note that you can directly use the **Yolov1(v2)-Caffe** with the original Caffe version. If you want to
+use **yolov3-caffe**, you must add the upsample-layer into the original Caffe and recompile it.
+You can find the source code of the upsample-layer in the 
+[extra_caffe_layers](https://github.com/BingzheWu/object_detetction_tools/tree/master/extra_caffe_layers) dir.
+You can get more information in [add new layers](https://github.com/BVLC/caffe/wiki/Development).
+ 
