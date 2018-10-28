@@ -18,6 +18,7 @@ def test_yolov3_detector(prototxt_file, weights_file, image_file):
     img = load_image(image_file)
     net.blobs['data'].data[...] = img
     net.forward()
+    print(net.blobs['layer107-yolo'].data)
     return net.blobs['layer107-yolo'].data, net.blobs['layer95-yolo'].data, net.blobs['layer83-yolo'].data
 def vis_detections(prototxt_file, weights_file, image_file, num_classes, masks, thresh = 0.5, anchors = [10,13,  16,30,  33,23,  30,61,  62,45,  59,119,  116,90,  156,198,  373,326]):
     features = test_yolov3_detector(prototxt_file, weights_file, image_file)

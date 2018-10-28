@@ -13,9 +13,8 @@ Currently, we have implemented the following features:
 
 #### yolo-caffe
 Now our tool can be used for the transformation from arbitrary Yolo version to Caffemodel.
-Note that you can directly use the **Yolov1(v2)-Caffe** with the original Caffe version. If you want to
+Note that you can directly use the **yolov1(v2)-caffe** with the original Caffe version. If you want to
 use **yolov3-caffe**, you must add the upsample-layer into the original Caffe and recompile it.
 You can find the source code of the upsample-layer in the 
 [extra_caffe_layers](https://github.com/BingzheWu/object_detetction_tools/tree/master/extra_caffe_layers) dir.
 You can get more information in [add new layers](https://github.com/BVLC/caffe/wiki/Development).
- 
